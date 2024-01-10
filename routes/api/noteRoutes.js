@@ -2,7 +2,7 @@ const router = require("express").Router();
 const fs = require("fs");
 const { v4: uuid } = require("uuid");
 
-router.get("/", async (req, res) => {
+router.get("/", (req, res) => {
   try {
     const data = fs.readFileSync("./db/db.json", "utf8");
     const notes = JSON.parse(data);
@@ -12,11 +12,10 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", (req, res) => {
   try {
-    console.log(req.body);
-
     const { title, text } = req.body;
+
     if (req.body) {
       const newNote = {
         title,
@@ -24,18 +23,18 @@ router.post("/", async (req, res) => {
         id: uuid(),
       };
 
-    const data = fs.readFileSync("./db/db.json", "utf8");
-    const notes = JSON.parse(data);
-    notes.push(newNote);
-    fs.appendFileSync("./db/db.json", JSON.stringify(notes));
-    res.status(200).json({message: "Note added successfully"});
+      const data = fs.readFileSync("./db/db.json", "utf8");
+      const notes = JSON.parse(data);
+      notes.push(newNote);
+      fs.writeFileSync("./db/db.json", JSON.stringify(notes));
+      res.status(200).json({ message: "Note added successfully" });
     }
   } catch (err) {
     res.status(500).json(err);
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", (req, res) => {
   try {
     const { id } = req.params;
 
