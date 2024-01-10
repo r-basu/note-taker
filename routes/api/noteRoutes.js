@@ -1,17 +1,12 @@
 const router = require("express").Router();
-const {
-  readFromFile,
-  readAndAppend,
-  writeToFile,
-} = require("../../helpers/fsUtils");
-const uuid = require("../../helpers/uuid");
 const fs = require("fs");
+const { v4: uuid } = require("uuid");
 
 router.get("/", async (req, res) => {
   try {
-    readFromFile("./db/db.json").then((notes) =>
-      res.status(200).json(JSON.parse(notes))
-    );
+    const data = fs.readFileSync("./db/db.json", "utf8");
+    const notes = JSON.parse(data);
+    res.status(200).json(notes);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -28,8 +23,12 @@ router.post("/", async (req, res) => {
         text,
         id: uuid(),
       };
-      readAndAppend(newNote, "./db/db.json");
-      res.status(200).json(`Note added successfully`);
+
+    const data = fs.readFileSync("./db/db.json", "utf8");
+    const notes = JSON.parse(data);
+    notes.push(newNote);
+    fs.appendFileSync("./db/db.json", JSON.stringify(notes));
+    res.status(200).json({message: "Note added successfully"});
     }
   } catch (err) {
     res.status(500).json(err);
