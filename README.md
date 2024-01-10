@@ -13,6 +13,8 @@ Connecting an existing frontend note-taking application with a new `express` bac
 
 [Heroku deployment demo](https://notetaker-rb-7eb1eeb8328b.herokuapp.com/)
 
+![Example](./assets/example.png)
+
 ## Local Installation
 
 1. `npm i`
